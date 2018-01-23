@@ -15,6 +15,7 @@ public class PictureFrame
   /** Main window used as the frame */
   JFrame frame = new JFrame();
   
+  
   /** ImageIcon used to display the picture in the label*/
   ImageIcon imageIcon = new ImageIcon();
   
@@ -171,6 +172,7 @@ public class PictureFrame
     
     // make the frame visible
     frame.setVisible(true);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
   
 }

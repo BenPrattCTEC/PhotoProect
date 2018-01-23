@@ -789,19 +789,17 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
     public Component getLastComponent(Container focusCycleRoot) {
       return rowValue;
     }
-    
     public Component getFirstComponent(Container focusCycleRoot) {
       return colValue;
     }
   }
   
-  /**
-   * Test Main.  It will explore the beach 
-   */
-  public static void main( String args[])
+  public void updatePicture(DigitalPicture picture)
   {
-    Picture pix = new Picture("beach.jpg");
-    pix.explore();
+    // set the fields
+    this.picture=picture;
+    zoom(1);
+    displayPixelInformation(colIndex, rowIndex);
   }
   
 }
