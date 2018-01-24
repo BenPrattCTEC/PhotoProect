@@ -1,5 +1,6 @@
 package pixLab.classes;
 
 public enum RGB {
-	RED, GREEN, BLUE
+	RED, GREEN, BLUE, YELLOW
+	
 }

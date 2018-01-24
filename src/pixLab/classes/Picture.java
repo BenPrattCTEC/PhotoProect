@@ -1,12 +1,12 @@
 package pixLab.classes;
 
 import java.awt.*;
-import java.awt.font.*;
-import java.awt.geom.*;
+//import java.awt.font.*;
+//import java.awt.geom.*;
 import java.awt.image.BufferedImage;
-import java.text.*;
-import java.util.*;
-import java.util.List; // resolves problem with java.awt.List and java.util.List
+//import java.text.*;
+//import java.util.*;
+//import java.util.List; // resolves problem with java.awt.List and java.util.List
 
 /**
  * A class that represents a picture. This class inherits from SimplePicture and
@@ -193,9 +193,9 @@ public class Picture extends SimplePicture {
 				rightPixel = pixels[row][col + 1];
 				rightColor = rightPixel.getColor();
 				if (leftPixel.colorDistance(rightColor) > edgeDist)
-					leftPixel.setColor(Color.BLACK);
-				else
 					leftPixel.setColor(Color.WHITE);
+				else
+					leftPixel.setColor(Color.BLACK);
 			}
 		}
 	}
@@ -272,6 +272,12 @@ public class Picture extends SimplePicture {
 						retBuffer += pixels[row][col].getGreen();
 					}
 				}
+			case YELLOW:
+				for (int row = 0; row < pixels.length; row++) {
+					for (int col = 0; col < pixels[0].length; col++) {
+						retBuffer += pixels[row][col].getYellow();
+					}
+				}
 		}
 		return retBuffer / (pixels.length * pixels[0].length);
 		
@@ -283,7 +289,7 @@ public class Picture extends SimplePicture {
 			case RED:
 				for (int row = 0; row < pixels.length; row++) {
 					for (int col = 0; col < pixels[0].length; col++) {
-						if (pixels[row][col].getRed() > threshold && pixels[row][col].getGreen() < pixels[row][col].getRed()*requiedIntensity && pixels[row][col].getBlue() < pixels[row][col].getRed()*requiedIntensity) {
+						if (pixels[row][col].getRed() > threshold && pixels[row][col].getGreen() < pixels[row][col].getRed() * requiedIntensity && pixels[row][col].getBlue() < pixels[row][col].getRed() * requiedIntensity) {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
@@ -296,7 +302,7 @@ public class Picture extends SimplePicture {
 			case BLUE:
 				for (int row = 0; row < pixels.length; row++) {
 					for (int col = 0; col < pixels[0].length; col++) {
-						if (pixels[row][col].getBlue() > threshold && pixels[row][col].getGreen() < pixels[row][col].getBlue()*requiedIntensity && pixels[row][col].getRed() < pixels[row][col].getBlue()*requiedIntensity) {
+						if (pixels[row][col].getBlue() > threshold && pixels[row][col].getGreen() < pixels[row][col].getBlue() * requiedIntensity && pixels[row][col].getRed() < pixels[row][col].getBlue() * requiedIntensity) {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
@@ -309,7 +315,19 @@ public class Picture extends SimplePicture {
 			case GREEN:
 				for (int row = 0; row < pixels.length; row++) {
 					for (int col = 0; col < pixels[0].length; col++) {
-						if (pixels[row][col].getGreen() > threshold && pixels[row][col].getBlue() < pixels[row][col].getGreen()*requiedIntensity && pixels[row][col].getRed() < pixels[row][col].getGreen()*requiedIntensity) {
+						if (pixels[row][col].getGreen() > threshold && pixels[row][col].getBlue() < pixels[row][col].getGreen() * requiedIntensity && pixels[row][col].getRed() < pixels[row][col].getGreen() * requiedIntensity) {
+							pixels[row][col].setColor(Color.WHITE);
+						}
+						else {
+							pixels[row][col].setColor(Color.BLACK);
+						}
+					}
+				}
+				break;
+			case YELLOW:
+				for (int row = 0; row < pixels.length; row++) {
+					for (int col = 0; col < pixels[0].length; col++) {
+						if (pixels[row][col].getYellow() > threshold && pixels[row][col].getCyan() < pixels[row][col].getYellow() * requiedIntensity && pixels[row][col].getMagenta() < pixels[row][col].getYellow() * requiedIntensity) {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
@@ -322,29 +340,34 @@ public class Picture extends SimplePicture {
 		
 	}
 	
-	public void cutoffBottom(int numOfPixels){
+	public void cutoffBottom(int numOfPixels) {
 		Pixel[][] pixels = this.getPixels2D();
-		for(int row = pixels.length-numOfPixels; row < pixels.length; row++){
-			for(int col = 0; col < pixels[0].length; col++){
+		for (int row = pixels.length - numOfPixels; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
 				pixels[row][col].setColor(Color.BLACK);
 			}
 		}
 		
 	}
 	
-	public int[] com(){
-		int colBuffer = 0, rowBuffer = 0;
+	public int[] getCOM() {
+		double colTotal = 0, rowTotal = 0, massTotal = 0;
 		Pixel[][] pixels = this.getPixels2D();
-		for(int row = pixels.length; row < pixels.length; row++){
-			for(int col = 0; col < pixels[0].length; col++){
-				if(pixels[row][col].getAverage() > 128){
-					colBuffer+=col;
-					rowBuffer+=row;
-					
-				}
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				massTotal += (double)pixels[row][col].getAverage();
+				rowTotal += (double)pixels[row][col].getAverage() * row;
+				colTotal += (double)pixels[row][col].getAverage() * col;
 			}
 		}
-		return new int[]{rowBuffer/pixels.length, colBuffer/pixels[0].length};
+		try {
+			colTotal /= massTotal;
+			rowTotal /= massTotal;
+			return new int[] {(int)colTotal, (int)rowTotal };
+		}
+		catch (Exception e) {
+			return new int[] { 0, 0 };
+		}
 	}
-		
+	
 } // this } is the end of class Picture, put all new methods before this
