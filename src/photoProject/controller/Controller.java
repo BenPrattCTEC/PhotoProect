@@ -9,13 +9,15 @@ public class Controller {
 			Picture pic;
 			PictureExplorer window;
 			pic = new Picture("src/pixLab/images/beach.jpg");
-			pic.blur(0, 0, 100);
+			pic.verticalColorShift(50, 0, 100);
 			// pic.edgeDetection(120);
 			// pic.edgeDetection(120);
 			// pic.edgeDetection(120);
 			// pic.edgeDetection(120);
 			window = new PictureExplorer(pic);
-			window.displayPixelInformation(String.valueOf(com[0]), String.valueOf(com[1]));
+			pic.blur(0, 0, 100);
+
+			window.updatePicture(pic);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
