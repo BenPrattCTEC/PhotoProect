@@ -156,7 +156,7 @@ public class PictureFrame
   }
   
   /**
-   * A method to initialize the picture frame
+   * A method to initialize the picture frame!setBattle True
    */
   private void initFrame()
   {

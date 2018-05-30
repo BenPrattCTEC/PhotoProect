@@ -293,7 +293,7 @@ public class Picture extends SimplePicture {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
-							pixels[row][col].setColor(Color.BLACK);
+							// pixels[row][col].setColor(Color.BLACK);
 						}
 					}
 				}
@@ -306,7 +306,7 @@ public class Picture extends SimplePicture {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
-							pixels[row][col].setColor(Color.BLACK);
+							// pixels[row][col].setColor(Color.BLACK);
 						}
 					}
 				}
@@ -319,7 +319,7 @@ public class Picture extends SimplePicture {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
-							pixels[row][col].setColor(Color.BLACK);
+							// pixels[row][col].setColor(Color.BLACK);
 						}
 					}
 				}
@@ -331,7 +331,7 @@ public class Picture extends SimplePicture {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
-							pixels[row][col].setColor(Color.BLACK);
+							// pixels[row][col].setColor(Color.BLACK);
 						}
 					}
 				}
@@ -355,19 +355,156 @@ public class Picture extends SimplePicture {
 		Pixel[][] pixels = this.getPixels2D();
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
-				massTotal += (double)pixels[row][col].getAverage();
-				rowTotal += (double)pixels[row][col].getAverage() * row;
-				colTotal += (double)pixels[row][col].getAverage() * col;
+				massTotal += (double) pixels[row][col].getAverage();
+				rowTotal += (double) pixels[row][col].getAverage() * row;
+				colTotal += (double) pixels[row][col].getAverage() * col;
 			}
 		}
 		try {
 			colTotal /= massTotal;
 			rowTotal /= massTotal;
-			return new int[] {(int)colTotal, (int)rowTotal };
+			return new int[] { (int) colTotal, (int) rowTotal };
 		}
 		catch (Exception e) {
 			return new int[] { 0, 0 };
 		}
 	}
 	
+	public void bombetteFilter(int startRow, int startCol) {
+		Pixel fromPixel = null;
+		Pixel toPixel = null;
+		Picture bombette = new Picture("Bombette_(Paper_Mario).png");
+		Pixel[][] toPixels = this.getPixels2D();
+		Pixel[][] fromPixels = bombette.getPixels2D();
+		int fromRow = 0;
+		for (int toRow = startRow; fromRow < fromPixels.length && toRow < toPixels.length; toRow++) {
+			int fromCol = 0;
+			for (int toCol = startCol; fromCol < fromPixels[0].length && toCol < toPixels[0].length; toCol++) {
+				fromPixel = fromPixels[fromRow][fromCol];
+				toPixel = toPixels[toRow][toCol];
+				if (!fromPixel.isTransparent()) {
+					toPixel.setColor(fromPixel.getColor());
+				}
+				fromCol++;
+			}
+			fromRow++;
+		}
+		int fromCol = 0;
+	}
+	
+	public void greenScreen(Picture backgroundImage, int average, double requiredIntensity) {
+		Picture background = new Picture(backgroundImage);
+		Pixel[][] sourcePixels = getPixels2D();
+		Pixel[][] backgroundPixels = background.getPixels2D();
+		System.out.println(average);
+		for (int row = 0; row < sourcePixels.length; row++) {
+			for (int col = 0; col < sourcePixels[0].length; col++) {
+				if (sourcePixels[row][col].getGreen() > average && sourcePixels[row][col].getRed() < backgroundPixels[row][col].getRed() * requiredIntensity
+						&& sourcePixels[row][col].getBlue() < backgroundPixels[row][col].getBlue() * requiredIntensity) {
+					sourcePixels[row][col].setRed(backgroundPixels[row][col].getRed());
+					sourcePixels[row][col].setBlue(backgroundPixels[row][col].getBlue());
+					sourcePixels[row][col].setGreen(backgroundPixels[row][col].getGreen());
+				}
+			}
+		}
+		
+	}
+	
+	public void blur(int amount) {
+		int red, green, blue;
+		Pixel[][] pixels = getPixels2D();
+		for (int i = 0; i < amount; i++) {
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					try {
+						red = (pixels[row - 1][col].getRed() + pixels[row + 1][col].getRed() + pixels[row][col - 1].getRed() + pixels[row][col + 1].getRed() + pixels[row][col].getRed()) / 5;
+						green = (pixels[row - 1][col].getGreen() + pixels[row + 1][col].getGreen() + pixels[row][col - 1].getGreen() + pixels[row][col + 1].getGreen() + pixels[row][col].getGreen()) / 5;
+						blue = (pixels[row - 1][col].getBlue() + pixels[row + 1][col].getBlue() + pixels[row][col - 1].getBlue() + pixels[row][col + 1].getBlue() + pixels[row][col].getBlue()) / 5;
+						pixels[row][col].setRed(red);
+						pixels[row][col].setGreen(green);
+						pixels[row][col].setBlue(blue);
+					}
+					catch (ArrayIndexOutOfBoundsException e) {
+						
+					}
+				}
+			}
+		}
+	}
+	
+	public void blur(int redAmount, int greenAmount, int blueAmount) {
+		int red, green, blue;
+		Pixel[][] pixels = getPixels2D();
+		for (int i = 0; i < redAmount; i++) {
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					try {
+						red = (pixels[row - 1][col].getRed() + pixels[row + 1][col].getRed() + pixels[row][col - 1].getRed() + pixels[row][col + 1].getRed() + pixels[row][col].getRed()) / 5;
+						pixels[row][col].setRed(red);
+						
+					}
+					catch (ArrayIndexOutOfBoundsException e) {
+						
+					}
+				}
+			}
+		}
+		
+		for (int i = 0; i < greenAmount; i++) {
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					try {
+						green = (pixels[row - 1][col].getGreen() + pixels[row + 1][col].getGreen() + pixels[row][col - 1].getGreen() + pixels[row][col + 1].getGreen() + pixels[row][col].getGreen()) / 5;
+						pixels[row][col].setGreen(green);
+					}
+					catch (ArrayIndexOutOfBoundsException e) {
+						
+					}
+				}
+			}
+		}
+		
+		for (int i = 0; i < blueAmount; i++) {
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					try {
+						blue = (pixels[row - 1][col].getBlue() + pixels[row + 1][col].getBlue() + pixels[row][col - 1].getBlue() + pixels[row][col + 1].getBlue() + pixels[row][col].getBlue()) / 5;
+						pixels[row][col].setBlue(blue);
+					}
+					catch (ArrayIndexOutOfBoundsException e) {
+						
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public void verticalShift(int pixelShift) {
+		Picture newPic = new Picture(this.getFileName());
+		Pixel[][] newPixels = newPic.getPixels2D();
+		Pixel[][] thisPixels = this.getPixels2D();
+		
+		for (int row = pixelShift; row < thisPixels.length + pixelShift; row++) {
+			for (int col = 0; col < thisPixels[0].length; col++) {
+				thisPixels[row % thisPixels.length][col].setRed(newPixels[row - pixelShift][col].getRed());
+				thisPixels[row % thisPixels.length][col].setGreen(newPixels[row - pixelShift][col].getGreen());
+				thisPixels[row % thisPixels.length][col].setBlue(newPixels[row - pixelShift][col].getBlue());
+			}
+		}
+	}
+	
+	public void verticalColorShift(int redShift, int greenShift, int blueShift) {
+		Picture newPic = new Picture(this.getFileName());
+		Pixel[][] newPixels = newPic.getPixels2D();
+		Pixel[][] thisPixels = this.getPixels2D();
+		
+		for (int row = 0; row < thisPixels.length; row++) {
+			for (int col = 0; col < thisPixels[0].length; col++) {
+				thisPixels[row % thisPixels.length][col].setRed(newPixels[(row + redShift) % thisPixels.length][col].getRed());
+				thisPixels[row % thisPixels.length][col].setGreen(newPixels[(row + greenShift) % thisPixels.length][col].getGreen());
+				thisPixels[row % thisPixels.length][col].setBlue(newPixels[(row + blueShift) % thisPixels.length][col].getBlue());
+			}
+		}
+	}
 } // this } is the end of class Picture, put all new methods before this

@@ -382,6 +382,12 @@ public class Pixel {
 		return average;
 	}
 	
+	public boolean isTransparent(){
+		if(getAverage()<1 && getAlpha() == 255)
+			return true;
+		return false;
+	}
+	
 	/**
 	 * Method to return a string with information about this pixel
 	 * 
